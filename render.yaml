@@ -1,0 +1,14 @@
+# render.yaml - Render 部署配置
+services:
+  - type: web
+    name: indexpulse-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./data/indexpulse.db
+      - key: ENABLE_SCHEDULER
+        value: "true"
+    autoDeploy: true
