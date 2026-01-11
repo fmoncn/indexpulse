@@ -1,0 +1,25 @@
+# 依赖
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# 调试
+npm-debug.log*
+
+# IDE
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
