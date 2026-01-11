@@ -16,5 +16,5 @@ RUN mkdir -p /app/data
 ENV PORT=8000
 EXPOSE 8000
 
-# 使用 shell 形式以支持环境变量
-CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT
+# 使用 shell 形式以支持环境变量展开
+CMD ["/bin/sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]
