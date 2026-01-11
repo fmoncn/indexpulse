@@ -160,6 +160,38 @@ class ETFInfo(Base):
         }
 
 
+class IndexPrediction(Base):
+    """指数48小时预测表"""
+    __tablename__ = "index_predictions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    index_code = Column(String(20), nullable=False, index=True)  # sp500/nasdaq100/csi300/star50/hsi
+    index_name = Column(String(50))
+    current_price = Column(Float)  # 当前价格
+    predicted_change = Column(Float)  # 预测涨跌幅 %
+    confidence = Column(String(20))  # high/medium/low
+    direction = Column(String(20))  # bullish/bearish/neutral
+    factors = Column(JSON)  # 影响因素列表
+    summary = Column(Text)  # 预测摘要
+    predicted_at = Column(DateTime, default=datetime.utcnow, index=True)  # 预测生成时间
+    expires_at = Column(DateTime)  # 预测过期时间 (48小时后)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "index_code": self.index_code,
+            "index_name": self.index_name,
+            "current_price": self.current_price,
+            "predicted_change": self.predicted_change,
+            "confidence": self.confidence,
+            "direction": self.direction,
+            "factors": self.factors,
+            "summary": self.summary,
+            "predicted_at": self.predicted_at.isoformat() if self.predicted_at else None,
+            "expires_at": self.expires_at.isoformat() if self.expires_at else None,
+        }
+
+
 class AlertConfig(Base):
     """预警配置表"""
     __tablename__ = "alert_config"

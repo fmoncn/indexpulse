@@ -12,6 +12,7 @@ from .database import (
     FundFlowHistory,
     IndexQuote,
     ETFInfo,
+    IndexPrediction,
     AlertConfig
 )
 
@@ -26,5 +27,6 @@ __all__ = [
     "FundFlowHistory",
     "IndexQuote",
     "ETFInfo",
+    "IndexPrediction",
     "AlertConfig"
 ]

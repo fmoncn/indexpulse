@@ -10,6 +10,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from ..models import SessionLocal
 from ..scrapers import get_qdii_premium_data, get_north_flow, get_south_flow, get_all_indices
 from ..services import EventService
+from ..services.prediction_service import generate_all_predictions
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +82,23 @@ def job_update_indices():
             logger.warning("未获取到指数行情数据")
     except Exception as e:
         logger.error(f"更新指数行情失败: {e}")
+
+
+def job_update_predictions():
+    """
+    定时任务：更新48小时指数预测
+    每4小时执行一次
+    """
+    logger.info("开始更新48小时指数预测...")
+    try:
+        db = SessionLocal()
+        try:
+            predictions = generate_all_predictions(db)
+            logger.info(f"指数预测更新完成，生成 {len(predictions)} 个预测")
+        finally:
+            db.close()
+    except Exception as e:
+        logger.error(f"更新指数预测失败: {e}")
 
 
 def is_trading_time_cn() -> bool:
@@ -165,6 +183,15 @@ def start_scheduler():
         IntervalTrigger(minutes=2),
         id="update_indices",
         name="更新指数行情",
+        replace_existing=True,
+    )
+
+    # 48小时预测更新：每4小时执行一次
+    scheduler.add_job(
+        job_update_predictions,
+        IntervalTrigger(hours=4),
+        id="update_predictions",
+        name="更新48小时预测",
         replace_existing=True,
     )
 

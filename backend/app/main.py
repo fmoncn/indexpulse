@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from .models import init_db
-from .routers import events_router, premium_router, fund_flow_router, indices_router
+from .routers import events_router, premium_router, fund_flow_router, indices_router, prediction_router, market_router
 from .scheduler import start_scheduler, stop_scheduler, get_scheduler_status
 
 # 加载环境变量
@@ -70,6 +70,8 @@ app.include_router(events_router, prefix="/api")
 app.include_router(premium_router, prefix="/api")
 app.include_router(fund_flow_router, prefix="/api")
 app.include_router(indices_router, prefix="/api")
+app.include_router(prediction_router, prefix="/api")
+app.include_router(market_router, prefix="/api")
 
 
 @app.get("/")
@@ -109,12 +111,13 @@ async def get_status():
 @app.post("/api/trigger/{job_name}")
 async def trigger_job(job_name: str):
     """手动触发定时任务"""
-    from .scheduler import job_update_premium, job_update_fund_flow, job_update_indices
+    from .scheduler import job_update_premium, job_update_fund_flow, job_update_indices, job_update_predictions
 
     jobs = {
         "premium": job_update_premium,
         "fund_flow": job_update_fund_flow,
         "indices": job_update_indices,
+        "predictions": job_update_predictions,
     }
 
     if job_name not in jobs:

@@ -146,6 +146,26 @@ async function fetchEastMoneyUSIndices(): Promise<Record<string, IndexQuote>> {
         volume: d.f47,
       };
     }
+
+    // 恒生科技指数
+    const hstechUrl = 'https://push2.eastmoney.com/api/qt/stock/get?secid=100.HSTECH&fields=f43,f44,f45,f46,f47,f57,f58,f169,f170';
+    const hstechRes = await fetch(hstechUrl);
+    const hstechData = await hstechRes.json();
+
+    if (hstechData?.data) {
+      const d = hstechData.data;
+      results.hstech = {
+        code: 'hstech',
+        name: '恒生科技',
+        price: d.f43 / 100,
+        change: d.f169 / 100,
+        changePercent: d.f170 / 100,
+        open: d.f46 / 100,
+        high: d.f44 / 100,
+        low: d.f45 / 100,
+        volume: d.f47,
+      };
+    }
   } catch (error) {
     console.error('获取东方财富指数失败:', error);
   }
@@ -319,3 +339,107 @@ export async function fetchQDIIPremiums(): Promise<QDIIPremium[]> {
 // ============ 导出类型 ============
 
 export type { IndexQuote };
+
+// ============ 48小时预测 ============
+
+export interface IndexPrediction {
+  index_code: string;
+  index_name: string;
+  current_price: number;
+  predicted_change: number;  // 预测涨跌幅 %
+  confidence: 'high' | 'medium' | 'low';
+  direction: 'bullish' | 'bearish' | 'neutral';
+  factors: {
+    type: string;
+    label: string;
+    value: string;
+    impact: 'positive' | 'negative' | 'neutral';
+  }[];
+  summary: string;
+  predicted_at: string;
+  expires_at: string;
+}
+
+// 后端 API 地址
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+
+/**
+ * 获取所有指数的48小时预测
+ */
+export async function fetchPredictions(): Promise<IndexPrediction[]> {
+  try {
+    const response = await fetch(`${API_BASE}/prediction`);
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    console.error('获取预测数据失败:', error);
+    return [];
+  }
+}
+
+/**
+ * 获取单个指数的48小时预测
+ */
+export async function fetchIndexPrediction(indexCode: string): Promise<IndexPrediction | null> {
+  try {
+    const response = await fetch(`${API_BASE}/prediction/${indexCode}`);
+    const data = await response.json();
+    return data.data || null;
+  } catch (error) {
+    console.error(`获取 ${indexCode} 预测失败:`, error);
+    return null;
+  }
+}
+
+// ============ 市场指标 ============
+
+export interface MarketIndicators {
+  vix: {
+    value: number;
+    change: number;
+    change_percent: number;
+    level: 'low' | 'normal' | 'elevated' | 'high';
+    sentiment: string;
+  } | null;
+  dxy: {
+    value: number;
+    change: number;
+    change_percent: number;
+    trend: 'strong' | 'neutral' | 'weak';
+    description: string;
+  } | null;
+  treasury_10y: {
+    maturity: string;
+    yield: number;
+    change: number;
+  } | null;
+  treasury_2y: {
+    maturity: string;
+    yield: number;
+    change: number;
+  } | null;
+  yield_curve: {
+    spread: number;
+    inverted: boolean;
+    description: string;
+  } | null;
+  fear_greed: {
+    score: number;
+    level: string;
+    description: string;
+  } | null;
+}
+
+/**
+ * 获取市场指标数据
+ */
+export async function fetchMarketIndicators(): Promise<MarketIndicators | null> {
+  try {
+    const response = await fetch(`${API_BASE}/market`);
+    const data = await response.json();
+    return data.data || null;
+  } catch (error) {
+    console.error('获取市场指标失败:', error);
+    return null;
+  }
+}

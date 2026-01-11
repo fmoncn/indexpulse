@@ -9,6 +9,7 @@ from .jobs import (
     job_update_premium,
     job_update_fund_flow,
     job_update_indices,
+    job_update_predictions,
 )
 
 __all__ = [
@@ -19,4 +20,5 @@ __all__ = [
     "job_update_premium",
     "job_update_fund_flow",
     "job_update_indices",
+    "job_update_predictions",
 ]
