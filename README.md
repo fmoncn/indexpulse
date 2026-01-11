@@ -6,7 +6,9 @@
 
 - **QDII溢价率监控**：实时追踪标普500、纳斯达克100等QDII基金溢价率
 - **资金流向追踪**：北向资金、南向资金实时监控
-- **指数行情展示**：标普500、纳指100、沪深300、科创50、恒生指数
+- **指数行情展示**：标普500、纳指100、沪深300、科创50、恒生指数、恒生科技
+- **48小时预测**：综合多因素分析的指数涨跌预测
+- **市场指标**：VIX恐慌指数、美元指数、美债收益率、收益率曲线
 - **智能预警**：溢价率异常、资金大幅流入/流出自动预警
 - **暗色主题**：专业的投资监控界面
 
@@ -65,7 +67,18 @@ npm run dev
 
 访问: `https://你的用户名.github.io/indexpulse/`
 
-### 后端 - Render (免费)
+### 后端 - Railway (推荐)
+
+1. 注册 [Railway](https://railway.app)
+2. 点击 "New Project" → "Deploy from GitHub repo"
+3. 选择 indexpulse 仓库
+4. Railway 会自动检测并部署
+
+环境变量（可选）:
+- `DATABASE_URL` - 数据库连接（默认使用 SQLite）
+- `ENABLE_SCHEDULER` - 是否启用定时任务（默认 true）
+
+### 后端 - Render (备选)
 
 1. 注册 [Render](https://render.com)
 2. 创建 Web Service
@@ -96,6 +109,8 @@ ENABLE_SCHEDULER=true
 | `GET /api/premium` | 获取 QDII 溢价率 |
 | `GET /api/fund-flow/realtime` | 获取实时资金流向 |
 | `GET /api/indices` | 获取指数行情 |
+| `GET /api/prediction` | 获取48小时预测 |
+| `GET /api/market` | 获取市场指标 (VIX/DXY/国债) |
 | `GET /api/health` | 健康检查 |
 
 ## 目录结构
