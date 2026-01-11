@@ -1,11 +1,8 @@
-name: Deploy Frontend to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
-    paths:
-      - 'frontend/**'
-      - '.github/workflows/deploy-frontend.yml'
   workflow_dispatch:
 
 permissions:
@@ -37,8 +34,6 @@ jobs:
 
       - name: Build
         working-directory: frontend
-        env:
-          NEXT_PUBLIC_API_URL: ${{ vars.API_URL || 'https://indexpulse-api.onrender.com/api' }}
         run: npm run build
 
       - name: Upload artifact
