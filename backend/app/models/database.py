@@ -8,8 +8,15 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-# 数据库路径
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/indexpulse.db")
+# 数据库路径 - 使用绝对路径确保在任何目录下都能正常工作
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+DEFAULT_DB_PATH = os.path.join(DATA_DIR, "indexpulse.db")
+
+# 确保数据目录存在
+os.makedirs(DATA_DIR, exist_ok=True)
+
+DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{DEFAULT_DB_PATH}")
 
 # 创建引擎
 engine = create_engine(
